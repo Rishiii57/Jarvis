@@ -1,4 +1,5 @@
 import speech_recognition as sr
+from googleapiclient.discovery import build
 import webbrowser
 import pyttsx3
 import musiclib
@@ -13,6 +14,7 @@ newsapi = secrets.get("NEWS_API")
 weatherapi = secrets.get("WEATHER_API")
 lat = secrets.get("LATITUDE")
 lon = secrets.get("LONGITUDE")
+ytapikey = secrets.get("YT_API_KEY")
 
 
 aliases = {
@@ -51,12 +53,27 @@ def open(s):
         webbrowser.open("https://" + url + ".com")
 
 def play(s):
-    song = s[5:]
-    if song in musiclib.music:
-        webbrowser.open(musiclib.music[song])
-        speak(f"Playing {song}!")
+    youtube = build("youtube", "v3", developerKey=ytapikey )
+
+    request = youtube.search().list(
+        part="snippet",
+        q=s,
+        maxResults=1,
+        type="video"
+    )
+    response = request.execute()
+
+    if response["items"]:
+        video_id = response["items"][0]["id"]["videoId"]
+        video_title = response["items"][0]["snippet"]["title"]
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+        webbrowser.open(video_url)
+        speak(f"Playing: {video_title}")
+        return video_title
     else:
-        speak("Sorry, I don't know that song.")
+        speak("No song found.")
+        return None
 
 #defining the response to give to the command
 

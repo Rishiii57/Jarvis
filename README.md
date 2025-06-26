@@ -1,8 +1,8 @@
 # 🤖 Jarvis Voice Assistant (Python)
 
 Jarvis is a Python-based voice assistant that listens to voice commands, performs web-based tasks, and speaks responses. It can:
-- Open popular websites
-- Play specific songs (via a custom music library)
+- Open websites
+- Play songs (via youtube api)
 - Fetch weather updates
 - Read out the latest news headlines
 
@@ -15,7 +15,7 @@ Jarvis is a Python-based voice assistant that listens to voice commands, perform
 - 🌐 **Web Integration** to open sites like Google, YouTube, Netflix, etc.
 - 📰 **News API** to fetch top headlines
 - 🌦️ **OpenWeatherMap API** for current weather reports
-- 🎶 **Custom Music Library** support
+- 🎶 **Music** support
 - 🔐 Uses `.env` for storing API keys and location
 
 ---
@@ -26,5 +26,4 @@ Jarvis is a Python-based voice assistant that listens to voice commands, perform
 .
 ├── jarvis.py              # Main assistant code
 ├── .env                   # Environment variables (API keys and coordinates)
-├── musiclib.py            # Dictionary mapping songs to URLs
 ├── README.md              # You're reading it now
