@@ -3,33 +3,17 @@ import webbrowser
 import pyttsx3
 import musiclib
 import requests
-from dotenv import dotenv_values
 import country_converter as coco
+from dotenv import dotenv_values
+
+#getting all the API KEYS and other information
 
 secrets = dotenv_values(".env")
-
-recogniser = sr.Recognizer()
-engine = pyttsx3.init()
 newsapi = secrets.get("NEWS_API")
 weatherapi = secrets.get("WEATHER_API")
 lat = secrets.get("LATITUDE")
 lon = secrets.get("LONGITUDE")
 
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
-
-def process(c):
-    c = c.lower()
-    command = c[:5]
-    if (command=="open"):
-        open(c)
-    elif (command=="play"):
-        play(c)
-    elif (command=="give"):
-        give(c)
-    else:
-        speak("Unknown Command")
 
 aliases = {
     "g": "google",
@@ -51,14 +35,18 @@ aliases = {
     "whatsapp": "web.whatsapp.com",
 }
 
+recogniser = sr.Recognizer()
+engine = pyttsx3.init()
+
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
 def open(s):
-    s = s[5:]
+    url = s[5:]
     url = aliases.get(url, url)
     if '.' in url:
-        if '://' in url:
-            webbrowser.open(url)
-        else:
-            webbrowser.open("https://" + url)
+        webbrowser.open("https://" + url)
     else:
         webbrowser.open("https://" + url + ".com")
 
@@ -70,46 +58,47 @@ def play(s):
     else:
         speak("Sorry, I don't know that song.")
 
-def give(s):
-    if 'news' in s:
-        country = 'INDIA'
-        if len(s) > 8:
-            country = s[8:]
-        news(country)
-    elif 'weather' in s:
-        weather()
-    else:
-        speak("Invalid give command.")
+#defining the response to give to the command
 
-def news(country):
-    print("ok news")
-    
-    country_code = coco.convert(country, to="ISO2").lower()
-    country_code = (country_code, 'in')[country_code=='not found']
-    url = f"https://newsapi.org/v2/top-headlines?country={country_code}&apiKey={newsapi}"
-    
-    response = requests.get(url)
-    data = response.json()
-    
-    if data["status"] == "ok":
-        speak("Here are top three news headlines.")
-        articles = data["articles"][:3]  
-        for article in articles:
-            speak(article["title"])
-    else:
-        speak("Breaking news: There is no breaking news.")
+def process(c):
+    c = c.lower()
+    command = c[:4]
+    if (command=="open"):
+        open(c)
+    elif (command=="play"):
+        play(c)
+    elif "news" in c.lower():
+        country = 'USA'
+        country_code = coco.convert(country, to="ISO2").lower()
 
-def weather():
-    print("ok weather")
-    
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={weatherapi}&units=metric"
-    response = requests.get(url)
-    data = response.json()
-    
-    speak(f"Temperature {data['main']['temp']} degree celcius ")
-    speak(f"Weather {data['weather'][0]['description']}")
-    speak(f"Humidity {data['main']['humidity']}%")
-    speak(f"Wind Speed {data['wind']['speed']} meter per second")
+        url = f"https://newsapi.org/v2/top-headlines?country={country_code}&apiKey={newsapi}"
+        response = requests.get(url)
+        data = response.json()
+        
+
+        if data["status"] == "ok":
+            speak("Here are top three newsheadlines")
+            articles = data["articles"][:3]  
+            for article in articles:
+                speak(article["title"])
+        else:
+            speak("Breaking news: There is no breaking news.")
+
+
+    elif("weather" in c.lower()):
+        url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={weatherapi}&units=metric"
+        response = requests.get(url)
+        data = response.json()
+        speak(f"Temperature {data['main']['temp']} degree celcius ")
+        speak(f"Weather {data['weather'][0]['description']}")
+        speak(f"Humidity {data['main']['humidity']}%")
+        speak(f"Wind Speed {data['wind']['speed']} meter per second")
+    else:
+        speak("sorry i don't know that command")
+
+
+
+#Putting all things together
 
 if __name__ == "__main__":
     speak("Initializing jarvis")
