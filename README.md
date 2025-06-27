@@ -1,10 +1,11 @@
 # 🤖 Jarvis Voice Assistant (Python)
 
-Jarvis is a Python-based voice assistant that listens to voice commands, performs web-based tasks, and speaks responses. It can:
+Jarvis is a Python-based voice assistant that listens to your voice, performs intelligent tasks using online services, and responds with speech. It can:
 - Open websites
-- Play songs (via youtube api)
+- Play songs (via YouTube API)
 - Fetch weather updates
 - Read out the latest news headlines
+- Answer questions using AI (via OpenRouter API)
 
 ---
 
@@ -13,10 +14,21 @@ Jarvis is a Python-based voice assistant that listens to voice commands, perform
 - 🎤 **Voice Recognition** using `speech_recognition`
 - 🗣 **Text-to-Speech** using `pyttsx3`
 - 🌐 **Web Integration** to open sites like Google, YouTube, Netflix, etc.
-- 📰 **News API** to fetch top headlines
-- 🌦️ **OpenWeatherMap API** for current weather reports
-- 🎶 **Music** support
-- 🔐 Uses `.env` for storing API keys and location
+- 🎶 **Music Support** using direct links and YouTube search
+- 📰 **News API** integration (via NewsAPI.org)
+- 🌦️ **Weather API** integration (via OpenWeatherMap)
+- 🤖 **AI Assistant** using OpenRouter API (supports models like DeepSeek)
+- 🔐 Secure API key management using `.env`
+
+---
+
+## 🧠 AI Integration
+
+Jarvis uses the [OpenRouter](https://openrouter.ai) platform to generate intelligent responses for general questions using large language models like `deepseek/deepseek-r1:free`. This allows the assistant to respond smartly to open-ended queries like:
+
+- “What is the capital of France?”
+- “Tell me a joke.”
+- “Summarize Newton’s laws.”
 
 ---
 
@@ -25,5 +37,6 @@ Jarvis is a Python-based voice assistant that listens to voice commands, perform
 ```bash
 .
 ├── jarvis.py              # Main assistant code
-├── .env                   # Environment variables (API keys and coordinates)
-├── README.md              # You're reading it now
+├── musiclib.py            # Song title to YouTube URL mappings
+├── .env                   # API keys and location data
+

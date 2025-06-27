@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 import webbrowser
 import pyttsx3
 import requests
+import json
 import country_converter as coco
 from dotenv import dotenv_values
 
@@ -14,6 +15,7 @@ weatherapi = secrets.get("WEATHER_API")
 lat = secrets.get("LATITUDE")
 lon = secrets.get("LONGITUDE")
 ytapikey = secrets.get("YT_API_KEY")
+aikey = secrets.get("AI_API")
 
 
 aliases = {
@@ -110,7 +112,28 @@ def process(c):
         speak(f"Humidity {data['main']['humidity']}%")
         speak(f"Wind Speed {data['wind']['speed']} meter per second")
     else:
-        speak("sorry i don't know that command")
+        headers = {
+            "Authorization": f"Bearer {aikey}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://localhost",
+            "X-Title": "jarvis"
+        }
+
+        data = {
+            "model": "deepseek/deepseek-r1:free",
+            "messages": [
+                {"role": "system", "content": "You are a virtual assistant named Jarvis. Give short and crisp replies."},
+                {"role": "user", "content": c}
+            ]
+        }
+        response = requests.post(
+            url="https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            data=json.dumps(data)
+        )
+        result = response.json()
+        reply = result["choices"][0]["message"]["content"]
+        speak(reply)
 
 
 
